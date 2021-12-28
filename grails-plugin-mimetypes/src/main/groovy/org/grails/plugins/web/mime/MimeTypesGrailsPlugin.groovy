@@ -13,13 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.grails.plugins.web.mime
 
-import grails.plugins.Plugin
-import org.grails.web.mime.DefaultMimeTypeResolver
-import grails.web.mime.MimeTypeResolver
-import org.grails.web.mime.DefaultMimeUtility
-import grails.web.mime.MimeType
+import grails.util.GrailsUtil
 
 /**
  * Provides content negotiation capabilities to Grails via a new withFormat method on controllers
@@ -30,13 +27,14 @@ import grails.web.mime.MimeType
  * @deprecated Use {@link MimeTypesConfiguration} instead
  */
 @Deprecated
-abstract class AbstractMimeTypesGrailsPlugin extends Plugin {
+class MimeTypesGrailsPlugin extends AbstractMimeTypesGrailsPlugin {
 
-    Closure doWithSpring() {{->
-        "${MimeType.BEAN_NAME}"(MimeTypesFactoryBean)
-        final mimeTypesBeanRef = ref(MimeType.BEAN_NAME)
+    def version = GrailsUtil.getGrailsVersion()
+    def dependsOn = [core:version, controllers:version]
+    def observe = ['controllers']
 
-        grailsMimeUtility(DefaultMimeUtility, mimeTypesBeanRef)
-        "${MimeTypeResolver.BEAN_NAME}"(DefaultMimeTypeResolver)
-    }}
+    @Override
+    Closure doWithSpring() {
+        return super.doWithSpring()
+    }
 }
